@@ -3,9 +3,9 @@ const INTIAL_STATE = {
 	socket: null,
 	users: [],
 	messages: []
-};
-export default function reducer(state = INTIAL_STATE, action){
-	switch(action.type){
+}
+export default function reducer(state = INTIAL_STATE, action) {
+	switch (action.type) {
 		case "SET_SOCKET_OBJECT":
 			return {
 				...state,
@@ -19,13 +19,13 @@ export default function reducer(state = INTIAL_STATE, action){
 			}
 
 		case "SET_USER_DATA":
-			return{
+			return {
 				...state,
 				users: action.users
 			}
 
 		case "SET_USER_MESSAGES":
-			return{
+			return {
 				...state,
 				messages: action.messages
 			}
@@ -36,6 +36,6 @@ export default function reducer(state = INTIAL_STATE, action){
 				messages: [...state.messages, action.message]
 			}
 		default:
-			return state;
+			return state
 	}
 }

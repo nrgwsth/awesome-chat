@@ -1,15 +1,18 @@
-import React, { Component, PropTypes } from "react";
+import React, {Component} from "react"
+import {Route} from "react-router"
 
-class App extends Component {
+import Home from "./Home"
+import Login from "./Login"
 
-  render() {
-    return (
-      <div style={{height: '100%'}} >
-        {this.props.children}
-      </div>
-    );
-  }
+class App extends Component{
+	render(){
+		return (
+			<div>
+				<Route path = "/" component = {Home} />
+				<Route path = "/login" component = {Login} />
+			</div>
+		)
+	}
 }
-
 
 export default App

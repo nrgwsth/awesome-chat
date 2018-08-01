@@ -1,24 +1,20 @@
-"use strict";
+import React, {Component} from "react"
+import {render} from "react-dom"
+import {Provider} from "react-redux"
+import {Router} from "react-router-dom"
 
-import React from 'react'
-import {Provider} from 'react-redux'
-import {render} from 'react-dom'
+import history from "./history"
 import configureStore from "./store/configureStore"
-import {Router,Route,browserHistory,Link} from "react-router"
-import {setSocketObject, isUserLoggedIn} from './actions'
-import Routes from "./routes"
+import App from "./containers/App.js"
 
-const store = configureStore();
-
-const socket = io();
-
-store.dispatch(setSocketObject(socket));
-
-store.dispatch(isUserLoggedIn());
+const store = configureStore()
 
 render(
-	<Provider store={store}>
-		<Router children={Routes} history={browserHistory} />
+	<Provider store = {store}>
+		<Router history = {history}>
+			<App />
+		</Router>
 	</Provider>,
 	document.getElementById("app")
-);
+)
+

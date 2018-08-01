@@ -1,6 +1,7 @@
-"use strict";
+"use strict"
 
-const mongoose = require("mongoose"), Schema = mongoose.Schema;
+const mongoose = require("mongoose"),
+	Schema = mongoose.Schema
 
 const Message_Schema = new Schema({
 	sender: String,
@@ -10,8 +11,8 @@ const Message_Schema = new Schema({
 		type: Date,
 		default: Date.now()
 	}
-});
+})
 
-const Message = mongoose.model("RCMessage", Message_Schema);
+const Message = mongoose.model("RCMessage", Message_Schema)
 
-module.exports = Message;
+module.exports = Message
