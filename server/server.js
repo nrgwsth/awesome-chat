@@ -1,11 +1,8 @@
 "use strict";
 
 const express = require("express");
-
 const app = express();
-
 const passport = require("passport");
-
 const PORT = process.env.PORT || 3000;
 
 const dotenv = require("dotenv");
@@ -34,6 +31,7 @@ process.on('unhandledRejection', (reason, p) => {
 
 process.on('uncaughtException', (err) => {
 	console.log(`Caught exception: ${err}`);
+	process.exit()
 });
 
 app.use(express.static(path.resolve(__dirname, "./../client/app")));
