@@ -15,18 +15,17 @@ const config = require("./config/webpack.config.js")
 
 const compiler = webpack(config)
 
-process.on("unhandledRejection", (reason, p) => {
-	console.log("Unhandled Rejection at: Promise", p, "reason:", reason)
-	// application specific logging, throwing an error, or other logic here
-})
+// process.on("unhandledRejection", (reason, p) => {
+// 	console.log("Unhandled Rejection at: Promise", p, "reason:", reason)
+// 	// application specific logging, throwing an error, or other logic here
+// })
 
-process.on("uncaughtException", err => {
-	console.log(`Caught exception: ${err}`)
-	process.exit()
-})
+// process.on("uncaughtException", err => {
+// 	console.log(`Caught exception: ${err}`)
+// 	process.exit()
+// })
 
-app.use(express.static(path.resolve(__dirname, "./../client/app")))
-app.use(require("serve-static")(__dirname + "/../../public"))
+app.use('/static', express.static(path.join(__dirname, '../build')))
 app.use(require("cookie-parser")())
 app.use(require("body-parser").json())
 app.use(

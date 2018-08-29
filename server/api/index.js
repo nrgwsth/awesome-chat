@@ -1,11 +1,10 @@
-"use strict"
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
+
 const User = require("./../models/User")
 const Message = require("./../models/Message")
 
 module.exports = function(app) {
-	app.get("/", function(req, res) {
-		res.send(renderFullPage())
-	})
 
 	app.get("/isuserloggedin", function(req, res) {
 		console.log("/isuserloggedin", req.user)
@@ -39,6 +38,81 @@ module.exports = function(app) {
 	app.post("/api/message/create", (req, res) => {
 		messageHandler(req.body.sender, req.body.receiver, req.body.message)
 		res.status(200).send("ok")
+	})
+
+	app.post("/api/finduser", async (req, res)=>{
+		let user
+		try{
+			user = await User.findOne({username: req.body.username})
+		} catch(e){
+			throw e
+		}
+		if(user){
+			res.json({"CODE": "USER_EXISTS"})
+		} else{
+			res.json({"CODE": "USER_DOES_NOT_EXIST"})
+		}
+	})
+
+	app.post("/api/login", async (req, res)=>{
+		if(!req.body.username || !req.body.password){
+			res.status(400).send({"CODE": "REQUIRED_PARAMETER_MISSING"})
+			return
+		}
+		let user
+		try{
+			user = await User.findOne({username: req.body.username})
+		} catch(e){
+			throw e
+		}
+
+		if(user){
+			const result = await bcrypt.compare(req.body.password, user.password)
+			if(result){
+				const jsonwebtoken = jwt.sign({_id: user._id, username: user.username}, "secret", { expiresIn: 24 * 60 * 60 })
+				res.status(200).send({token: jsonwebtoken})
+			} else{
+				res.status(400).send({"CODE": "INCORRECT_PASSWORD"})
+			}
+		} else{
+			const hash = await bcrypt.hash(req.body.password, 10)
+			const user = new User({
+				username: req.body.username,
+				password: hash
+			})
+
+			try {
+				newUser = await user.save()
+			} catch(e){
+				throw e
+			}
+			const jsonwebtoken = jwt.sign({_id: newUser._id, username: newUser.username}, "secret", { expiresIn: 24 * 60 * 60 })
+			res.status(200).send({token: jsonwebtoken})
+		}
+	})
+
+	function isAuthenticated(req, res, next){
+		const Authorization = req.headers["authorization"],
+		      token = Authorization.split("Bearer ")[1]
+
+		let decodedToken = null
+		try{
+			decodedToken = jwt.verify(token, "secret")
+		} catch(e){
+			res.status(400).send({"CODE": "UNAUTHORIZED_ACCESS"})
+		}
+		if(decodedToken){
+			console.log(decodedToken)
+			next()
+		}
+	}
+
+	app.get("/api/isSignedin", isAuthenticated, function(req,res){
+		res.send("Hello World")
+	})
+
+	app.get("/*", function(req, res) {
+		res.send(renderFullPage())
 	})
 }
 
