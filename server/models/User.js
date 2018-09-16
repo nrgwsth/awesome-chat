@@ -6,8 +6,7 @@ const mongoose = require("mongoose"),
 var User_Schema = new Schema({
 	id: String,
 	username: String,
-	displayName: String,
-	photo: String
+	password: String
 })
 
 const User = mongoose.model("BSUser", User_Schema)

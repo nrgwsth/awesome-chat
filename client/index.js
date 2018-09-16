@@ -7,6 +7,8 @@ import history from "./history"
 import configureStore from "./store/configureStore"
 import App from "./containers/App.js"
 
+import "./main.css"
+
 const store = configureStore()
 
 render(

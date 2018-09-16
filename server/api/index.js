@@ -28,11 +28,14 @@ module.exports = function(app) {
 		})
 	})
 
-	app.get("/api/user/listing", (req, res) => {
-		User.find({}).exec((err, users) => {
-			if (err) throw err
-			res.json(users)
-		})
+	app.get("/api/user/listing", isAuthenticated, async (req, res) => {
+		let users
+		try{
+			users = await User.find({})
+		} catch(e){
+			throw e
+		}
+		res.json(users)
 	})
 
 	app.post("/api/message/create", (req, res) => {
@@ -102,13 +105,17 @@ module.exports = function(app) {
 			res.status(400).send({"CODE": "UNAUTHORIZED_ACCESS"})
 		}
 		if(decodedToken){
-			console.log(decodedToken)
+			req.user = {_id: decodedToken._id, username: decodedToken.username}
 			next()
 		}
 	}
 
 	app.get("/api/isSignedin", isAuthenticated, function(req,res){
 		res.send("Hello World")
+	})
+
+	app.get("/api/getAllRooms", isAuthenticated, function(req, res){
+		const rooms = Room.find({owner: null})
 	})
 
 	app.get("/*", function(req, res) {
@@ -133,19 +140,19 @@ function renderFullPage() {
     <!doctype html>
     <html lang="en">
       <head>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
         <link rel="icon" href="./favicon.ico" type="image/x-icon" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
         <title>React Redux Socket.io Chat</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+    	<script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
 
         <style>
             #app{height: 100%;}
         </style>
       </head>
       <body>
-        <div id="app"></div>
+        <section class="section"><div id="app"></div></section>
         <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
         <script src="/bundle.js"></script>
       </body>

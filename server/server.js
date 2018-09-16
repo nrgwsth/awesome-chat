@@ -25,7 +25,7 @@ const compiler = webpack(config)
 // 	process.exit()
 // })
 
-app.use('/static', express.static(path.join(__dirname, '../build')))
+app.use("/static", express.static(path.join(__dirname, "../build")))
 app.use(require("cookie-parser")())
 app.use(require("body-parser").json())
 app.use(
@@ -67,7 +67,7 @@ mongoose.connect(
 	}
 )
 
-configurePassport(passport)
+//configurePassport(passport)
 
 require("./api/auth/")(app, passport)
 require("./api/")(app)

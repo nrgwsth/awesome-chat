@@ -116,3 +116,10 @@ export function logout() {
 		type: "LOGOUT"
 	}
 }
+
+export function loginUser(username){
+	return axios.post("/api/createuser", {username})
+}
+
+export * from "./api"
+export * from "./auth"
